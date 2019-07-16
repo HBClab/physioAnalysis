@@ -7,5 +7,5 @@ dependencies:
   - numpy=1.16.4
   - python=3.6.7
   - pip:
-    - https://github.com/neuropsychology/NeuroKit.py/zipball/c9589348
+    - git+https://github.com/jdkent/NeuroKit.py.git@flex_eda_preproc
 
