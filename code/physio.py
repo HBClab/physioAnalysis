@@ -9,6 +9,7 @@ import neurokit as nk
 import numpy as np
 import pandas as pd
 
+
 # functions to analyze gsr data
 def analyze_gsr(acqs, txts, outdir):
     """
@@ -109,6 +110,7 @@ def match_acq_txt(acq, txts):
     # nothing matches
     return None, acq, txts
 
+
 def filter_gsr(acq_txt_dict):
     """
     Filter/Preprocess the GSR data
@@ -133,6 +135,7 @@ def filter_gsr(acq_txt_dict):
 
     acq_txt_dict[key]['df'] = res['df']
     return acq_txt_dict
+
 
 def gen_filenames(acq_txt_dict):
     """
@@ -191,6 +194,7 @@ def gen_filenames(acq_txt_dict):
         sum_file = tmplt.format(**fdict, typ="summary", ext="json")
         
         return {'fig': fig_file, 'data': data_file, 'smry': sum_file, 'fdict': fdict}
+
 
 def write_results(acq_txt_dict, filenames):
     """
