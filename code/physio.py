@@ -206,7 +206,7 @@ def write_results(acq_txt_dict, filenames):
     
     fdict = filenames['fdict']
     out_df = acq_txt_dict[key]['df']
-    out_df.to_csv(filenames['data'])
+    out_df.to_csv(filenames['data'], sep="\t", index=False)
     title = os.path.basename(filenames['fig'].split('.')[0])
     out_df.plot(y=["EDA_Raw", "EDA_Filtered"], title=title)
     plt.savefig(filenames['fig'])
