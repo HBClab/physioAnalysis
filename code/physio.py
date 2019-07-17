@@ -245,7 +245,7 @@ if __name__ == '__main__':
                         help='path to the top level of the data directory')
     parser.add_argument('outdir', action='store',
                         help='path to output directory')
-    parser.add_argument('--participant_label', '--participant-label', action='store', nargs='+',
+    parser.add_argument('--participant_label', '--participant-label', action='store',
                         help='a single participant identifier ')
     
     opts = parser.parse_args()
