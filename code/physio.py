@@ -245,11 +245,16 @@ if __name__ == '__main__':
                         help='path to the top level of the data directory')
     parser.add_argument('outdir', action='store',
                         help='path to output directory')
+    parser.add_argument('--participant_label', '--participant-label', action='store', nargs='+',
+                        help='a single participant identifier ')
     
     opts = parser.parse_args()
 
-    acqs = glob(os.path.join(opts.indir, "sub-*", "**", "*.acq"))
-    txts = glob(os.path.join(opts.indir, "sub-*", "**", "*.txt"))
+    participant_label = "sub-*"
+    if opts.participant_label:
+        participant_label = opts.participant_label
+    acqs = glob(os.path.join(opts.indir, participant_label, "**", "*.acq"))
+    txts = glob(os.path.join(opts.indir, participant_label, "**", "*.txt"))
     outdir = os.path.abspath(opts.outdir)
 
     analyze_gsr(acqs, txts, outdir)
