@@ -9,6 +9,8 @@ import neurokit as nk
 import numpy as np
 import pandas as pd
 
+import matplotlib
+matplotlib.use('Agg')
 
 # functions to analyze gsr data
 def analyze_gsr(acqs, txts, outdir):
