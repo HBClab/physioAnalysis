@@ -28,6 +28,9 @@ def analyze_gsr(acqs, txts, outdir):
         
         fname_dict = gen_filenames(acq_txt_dict)
         
+        if fname_dict is None:
+            warnings.warn("Skipping acq File")
+            continue
         if (
             os.path.isfile(fname_dict['fig']) and
             os.path.isfile(fname_dict['data']) and
@@ -173,7 +176,8 @@ def gen_filenames(acq_txt_dict):
             if fdict["run_id"]:
                 fdict["run_id"] = int(fdict["run_id"].lstrip("run-"))
         else:
-            raise("FileName did not match either atrain or extend pattern")
+            warnings.warn("FileName did not match either atrain or extend pattern")
+            return None
 
         # strip the keys from the labels
         fdict["sub_id"] = fdict["sub_id"].lstrip("sub-")
