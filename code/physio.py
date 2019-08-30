@@ -12,6 +12,7 @@ import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
 
+
 # functions to analyze gsr data
 def analyze_gsr(acqs, txts, outdir):
     """
@@ -73,30 +74,21 @@ def match_acq_txt(acq, txts):
             continue
         # attempt 1 to read the txt file
         # assumes no header information and no time column
-        txt_df = pd.read_csv(txt,
-        header=None,
-        index_col=False,
-        names=acq_df.columns,
-        sep="\t")
+        txt_df = pd.read_csv(txt, header=None, index_col=False, names=acq_df.columns, sep="\t")
 
         # the file may have a header
         if np.any(txt_df.iloc[0,:].isnull()):
             # assume the txt file has a header
             try:
-                txt_df = pd.read_csv(txt,
-                    header=14,
-                    index_col=0,
-                    delim_whitespace=True,
-                    names=acq_df.columns)
+                txt_df = pd.read_csv(txt, header=14, index_col=0, delim_whitespace=True, names=acq_df.columns)
+            
             except:
+                
                 # assume the acknowledge file does not have the "Scanner TTl column"
+                
                 columns = list(acq_df.columns)
                 columns.insert(-1, "Scanner TTL")
-                txt_df = pd.read_csv(txt,
-                    header=14,
-                    index_col=0,
-                    delim_whitespace=True,
-                    names=columns)
+                txt_df = pd.read_csv(txt, header=14, index_col=0, delim_whitespace=True, names=columns)
             # assume in the two above cases,
             # there is a time column being treated as the index
             txt_df.reset_index(drop=True, inplace=True)
@@ -125,8 +117,8 @@ def filter_gsr(acq_txt_dict):
     acq_df = acq_txt_dict[key]['df']
     # where the Scanner Trigger is 0 initiates a slice acquition in the scanner
     # this may be false in some scenerios (e.g. when scan trigger is always 0)
-    start = acq_df["Scanner Trigger"].where(acq_df["Scanner Trigger"]==0.0).first_valid_index()
-    end = acq_df["Scanner Trigger"].where(acq_df["Scanner Trigger"]==0.0).last_valid_index()
+    start = acq_df["Scanner Trigger"].where(acq_df["Scanner Trigger"] == 0.0).first_valid_index()
+    end = acq_df["Scanner Trigger"].where(acq_df["Scanner Trigger"] == 0.0).last_valid_index()
     if start is None or end is None:
         warnings.warn("Scan Trigger Not Recognized, keeping all rows")
         acq_cut_df = acq_df
@@ -134,8 +126,8 @@ def filter_gsr(acq_txt_dict):
         acq_cut_df = acq_df.iloc[(acq_df.index >= start) & (acq_df.index <= end)]
 
     # process the GSR data
-    res = nk.bio_eda.eda_process(acq_df['GSR100C'], filter_type='butter',
-                                 band="lowpass", order=1, frequency=1,
+    res = nk.bio_ecg.ecg_process(ecg, rsp=none, acq_cut_df['PPG100C'], filter_type='FIR',
+                                 band="bandpass", order=1, frequency=[3, 45],
                                  sampling_rate=200)
 
     acq_txt_dict[key]['df'] = res['df']
@@ -197,8 +189,8 @@ def gen_filenames(acq_txt_dict):
                                  "sub-{sub_id}_ses-{ses_id}_task-{task_id}_run-{run_id}_{typ}.{ext}")
         fig_file = tmplt.format(**fdict, typ="qa", ext="svg")
         data_file = tmplt.format(**fdict, typ="physio", ext="tsv")
-        sum_file = tmplt.format(**fdict, typ="summary", ext="json")
-        
+        sum_file = tmplt.format(**fdict, typ="summary", ext="json") 
+
         return {'fig': fig_file, 'data': data_file, 'smry': sum_file, 'fdict': fdict}
 
 
