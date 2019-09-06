@@ -77,10 +77,14 @@ def match_acq_txt(acq, txts):
         txt_df = pd.read_csv(txt, header=None, index_col=False, names=acq_df.columns, sep="\t")
 
         # the file may have a header
-        if np.any(txt_df.iloc[0,:].isnull()):
+        if np.any(txt_df.iloc[0, :].isnull()):
             # assume the txt file has a header
             try:
-                txt_df = pd.read_csv(txt, header=14, index_col=0, delim_whitespace=True, names=acq_df.columns)
+                txt_df = pd.read_csv(txt,
+                                     header=14,
+                                     index_col=0,
+                                     delim_whitespace=True,
+                                     names=acq_df.columns)
             
             except:
                 
@@ -88,7 +92,11 @@ def match_acq_txt(acq, txts):
                 
                 columns = list(acq_df.columns)
                 columns.insert(-1, "Scanner TTL")
-                txt_df = pd.read_csv(txt, header=14, index_col=0, delim_whitespace=True, names=columns)
+                txt_df = pd.read_csv(txt,
+                                     header=14,
+                                     index_col=0,
+                                     delim_whitespace=True,
+                                     names=columns)
             # assume in the two above cases,
             # there is a time column being treated as the index
             txt_df.reset_index(drop=True, inplace=True)
@@ -126,7 +134,7 @@ def filter_gsr(acq_txt_dict):
         acq_cut_df = acq_df.iloc[(acq_df.index >= start) & (acq_df.index <= end)]
 
     # process the GSR data
-    res = nk.bio_ecg.ecg_process(ecg, rsp=none, acq_cut_df['PPG100C'], filter_type='FIR',
+    res = nk.bio_ecg.ecg_process(ecg, acq_cut_df['PPG100C'], rsp=None, filter_type='FIR',
                                  band="bandpass", order=1, frequency=[3, 45],
                                  sampling_rate=200)
 
