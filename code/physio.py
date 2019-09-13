@@ -26,9 +26,9 @@ def analyze_gsr(acqs, txts, outdir):
         if acq_txt_dict is None:
             acq_nonmatches.append(acq_nonmatch)
             continue
-        
+
         fname_dict = gen_filenames(acq_txt_dict)
-        
+
         if fname_dict is None:
             warnings.warn("Skipping acq File")
             continue
@@ -42,13 +42,13 @@ def analyze_gsr(acqs, txts, outdir):
         else:
             acq_txt_dict_proc = filter_gsr(acq_txt_dict)
             sub_dict = write_results(acq_txt_dict_proc, fname_dict)
-        
+
         group_msr.append(sub_dict)
-  
+
     group_df = pd.DataFrame(group_msr)
     group_df.to_csv(group_tsv, sep="\t")
     txt_nonmatches = txts
-    
+
     return acq_txt_dict_proc, acq_nonmatches, txt_nonmatches, group_df
 
 
@@ -162,7 +162,7 @@ def gen_filenames(acq_txt_dict):
     for acq, tgt_dct in acq_txt_dict.items():
         atrain_mch = atrain_ptrn.match(tgt_dct['txt'])
         extend_mch = extend_ptrn.match(tgt_dct['txt'])
-        
+
         if atrain_mch:
             fdict = atrain_mch.groupdict()
             # make task lowercase
@@ -183,7 +183,7 @@ def gen_filenames(acq_txt_dict):
         fdict["sub_id"] = fdict["sub_id"].lstrip("sub-")
         fdict["ses_id"] = fdict["ses_id"].lstrip("ses-")
         fdict["task_id"] = fdict["task_id"].lstrip("task-")
-        
+
         # template output file changes depending if run is a key or not
         if not fdict["run_id"]:
             tmplt = os.path.join(outdir,
@@ -209,7 +209,7 @@ def write_results(acq_txt_dict, filenames):
     # make directory to place results
     os.makedirs(os.path.dirname(filenames['data']), exist_ok=True)
     key = list(acq_txt_dict.keys())[0]
-    
+
     fdict = filenames['fdict']
     out_df = acq_txt_dict[key]['df']
     out_df.to_csv(filenames['data'], sep="\t", index=False)
@@ -231,10 +231,10 @@ def write_results(acq_txt_dict, filenames):
 
     with open(filenames['smry'], 'w') as outfile:  
         json.dump(sub_dict, outfile)
-    
+
     return sub_dict
 
-        
+
 if __name__ == '__main__':
     from argparse import ArgumentParser
     from glob import glob
@@ -247,7 +247,7 @@ if __name__ == '__main__':
                         help='path to output directory')
     parser.add_argument('--participant_label', '--participant-label', action='store',
                         help='a single participant identifier ')
-    
+
     opts = parser.parse_args()
 
     participant_label = "sub-*"
