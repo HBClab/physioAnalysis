@@ -17,3 +17,10 @@ From the root directory of this repository:
 ```
 
 To get help type: `./code/physio.py --help`
+
+Example Docker call:
+
+```bash
+docker run -it --rm -v ${PWD}:/home/neuro/physioAnalysis -p 8445:8080 jdkent/physio-analys:dev
+```
+
