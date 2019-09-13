@@ -37,7 +37,7 @@ def analyze_gsr(acqs, txts, outdir):
             os.path.isfile(fname_dict['data']) and
             os.path.isfile(fname_dict['smry'])
            ):
-            with open(fname_dict['smry']) as json_file:  
+            with open(fname_dict['smry']) as json_file:
                 sub_dict = json.load(json_file)
         else:
             acq_txt_dict_proc = filter_gsr(acq_txt_dict)
@@ -66,7 +66,7 @@ def match_acq_txt(acq, txts):
     # there should be enough rows in the dataframes
     if acq_df.shape[0] < min_len:
         return None, acq, txts
-            
+
     # big loop to see which txt file goes with the acknowledge file
     for txt in txts:
         # only look at txt files in the same directory as acknowledge file
@@ -74,7 +74,10 @@ def match_acq_txt(acq, txts):
             continue
         # attempt 1 to read the txt file
         # assumes no header information and no time column
-        txt_df = pd.read_csv(txt, header=None, index_col=False, names=acq_df.columns, sep="\t")
+        txt_df = pd.read_csv(txt, header=None,
+                             index_col=False,
+                             names=acq_df.columns,
+                             sep="\t")
 
         # the file may have a header
         if np.any(txt_df.iloc[0, :].isnull()):
@@ -85,11 +88,9 @@ def match_acq_txt(acq, txts):
                                      index_col=0,
                                      delim_whitespace=True,
                                      names=acq_df.columns)
-            
             except:
-                
-                # assume the acknowledge file does not have the "Scanner TTl column"
-                
+                # assume the acknowledge file does
+                # not have the "Scanner TTl column"
                 columns = list(acq_df.columns)
                 columns.insert(-1, "Scanner TTL")
                 txt_df = pd.read_csv(txt,
@@ -111,7 +112,7 @@ def match_acq_txt(acq, txts):
             acq_txt_dict[acq] = {'txt': txt, 'df': acq_df}
             txts.remove(txt)
             return acq_txt_dict, None, txts
-    
+
     # nothing matches
     return None, acq, txts
 
@@ -121,21 +122,29 @@ def filter_gsr(acq_txt_dict):
     Filter/Preprocess the GSR data
     """
     key = list(acq_txt_dict.keys())[0]
-    
+
     acq_df = acq_txt_dict[key]['df']
     # where the Scanner Trigger is 0 initiates a slice acquition in the scanner
     # this may be false in some scenerios (e.g. when scan trigger is always 0)
-    start = acq_df["Scanner Trigger"].where(acq_df["Scanner Trigger"] == 0.0).first_valid_index()
-    end = acq_df["Scanner Trigger"].where(acq_df["Scanner Trigger"] == 0.0).last_valid_index()
+    start = acq_df["Scanner Trigger"].where(
+        acq_df["Scanner Trigger"] == 0.0).first_valid_index()
+    end = acq_df["Scanner Trigger"].where(
+        acq_df["Scanner Trigger"] == 0.0).last_valid_index()
     if start is None or end is None:
         warnings.warn("Scan Trigger Not Recognized, keeping all rows")
         acq_cut_df = acq_df
     else:
-        acq_cut_df = acq_df.iloc[(acq_df.index >= start) & (acq_df.index <= end)]
+        acq_cut_df = acq_df.iloc[(acq_df.index >= start) &
+                                 (acq_df.index <= end)]
 
     # process the GSR data
-    res = nk.bio_ecg.ecg_process(ecg, acq_cut_df['PPG100C'], rsp=None, filter_type='FIR',
-                                 band="bandpass", order=1, frequency=[3, 45],
+    res = nk.bio_ecg.ecg_process(ecg,
+                                 acq_cut_df['PPG100C'],
+                                 rsp=None,
+                                 filter_type='FIR',
+                                 band="bandpass",
+                                 order=1,
+                                 frequency=[3, 45],
                                  sampling_rate=200)
 
     acq_txt_dict[key]['df'] = res['df']
@@ -176,7 +185,8 @@ def gen_filenames(acq_txt_dict):
             if fdict["run_id"]:
                 fdict["run_id"] = int(fdict["run_id"].lstrip("run-"))
         else:
-            warnings.warn("FileName did not match either atrain or extend pattern")
+            warnings.warn("FileName did not match either "
+                          "atrain or extend pattern")
             return None
 
         # strip the keys from the labels
@@ -186,20 +196,30 @@ def gen_filenames(acq_txt_dict):
 
         # template output file changes depending if run is a key or not
         if not fdict["run_id"]:
-            tmplt = os.path.join(outdir,
-                                 "sub-{sub_id}",
-                                 "ses-{ses_id}",
-                                 "sub-{sub_id}_ses-{ses_id}_task-{task_id}_{typ}.{ext}")
+            tmplt = os.path.join(
+                outdir,
+                "sub-{sub_id}",
+                "ses-{ses_id}",
+                "sub-{sub_id}_ses-{ses_id}_task-{task_id}_{typ}.{ext}"
+            )
+
         elif fdict["run_id"]:
-            tmplt = os.path.join(outdir,
-                                 "sub-{sub_id}",
-                                 "ses-{ses_id}",
-                                 "sub-{sub_id}_ses-{ses_id}_task-{task_id}_run-{run_id}_{typ}.{ext}")
+            tmplt = os.path.join(
+                outdir,
+                "sub-{sub_id}",
+                "ses-{ses_id}",
+                ("sub-{sub_id}_ses-{ses_id}_"
+                 "task-{task_id}_run-{run_id}_{typ}.{ext}")
+            )
+
         fig_file = tmplt.format(**fdict, typ="qa", ext="svg")
         data_file = tmplt.format(**fdict, typ="physio", ext="tsv")
-        sum_file = tmplt.format(**fdict, typ="summary", ext="json") 
+        sum_file = tmplt.format(**fdict, typ="summary", ext="json")
 
-        return {'fig': fig_file, 'data': data_file, 'smry': sum_file, 'fdict': fdict}
+        return {'fig': fig_file,
+                'data': data_file,
+                'smry': sum_file,
+                'fdict': fdict}
 
 
 def write_results(acq_txt_dict, filenames):
@@ -229,7 +249,7 @@ def write_results(acq_txt_dict, filenames):
         "EDA_std": out_df["EDA_Filtered"].std()
     }
 
-    with open(filenames['smry'], 'w') as outfile:  
+    with open(filenames['smry'], 'w') as outfile:
         json.dump(sub_dict, outfile)
 
     return sub_dict
@@ -245,8 +265,9 @@ if __name__ == '__main__':
                         help='path to the top level of the data directory')
     parser.add_argument('outdir', action='store',
                         help='path to output directory')
-    parser.add_argument('--participant_label', '--participant-label', action='store',
-                        help='a single participant identifier ')
+    parser.add_argument('--participant_label', '--participant-label',
+                        action='store',
+                        help='a single participant identifier')
 
     opts = parser.parse_args()
 
