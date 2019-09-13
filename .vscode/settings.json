@@ -1,0 +1,12 @@
+{
+    "python.pythonPath": "/opt/miniconda-latest/envs/physio/bin/python",
+    "python.linting.flake8Enabled": true,
+    "gitlens.showWhatsNewAfterUpgrades": false,
+    "python.testing.pytestEnabled": true,
+    "python.testing.unittestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.linting.enabled": true,
+    "python.testing.pytestArgs": [],
+    "python.linting.pylintEnabled": false,
+    "python.dataScience.debugJustMyCode": false
+}
