@@ -21,6 +21,11 @@ To get help type: `./code/physio.py --help`
 Example Docker call:
 
 ```bash
-docker run -it --rm -v ${PWD}:/home/neuro/physioAnalysis -p 8445:8080 jdkent/physio-analys:dev
+docker run -it --rm \
+       -v ${PWD}:/home/neuro/physioAnalysis \
+       -v ${HOME}/.gitconfig:/home/neuro/.gitconfig \
+       -v ${HOME}/.git-credentials:/home/neuro/.git-credentials \
+       -p 8445:8080 \
+       jdkent/physio-analys:dev
 ```
 
