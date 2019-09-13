@@ -138,8 +138,7 @@ def filter_gsr(acq_txt_dict):
                                  (acq_df.index <= end)]
 
     # process the GSR data
-    res = nk.bio_ecg.ecg_process(ecg,
-                                 acq_cut_df['PPG100C'],
+    res = nk.bio_ecg.ecg_process(acq_cut_df['PPG100C'],
                                  rsp=None,
                                  filter_type='FIR',
                                  band="bandpass",
