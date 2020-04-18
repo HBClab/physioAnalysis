@@ -19,7 +19,7 @@ generate_docker() {
     --run "mkdir -p /opt/codeserver && tar -xvf /tmp/code-server.tar.gz -C /opt/codeserver --strip-components=1" \
     --run '/opt/codeserver/code-server --install-extension eamodio.gitlens && /opt/codeserver/code-server --install-extension ms-python.python' \
     --expose 8080 \
-    --entrypoint '/opt/codeserver/code-server --auth none --host 0.0.0.0 /home/neuro/physioAnalysis'
+    # --entrypoint '/opt/codeserver/code-server --auth none --host 0.0.0.0 /home/neuro/physioAnalysis'
 }
 
 generate_docker > Dockerfile
