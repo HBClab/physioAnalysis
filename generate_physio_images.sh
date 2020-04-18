@@ -14,13 +14,12 @@ generate_docker() {
     --copy . /home/neuro/physioAnalysis \
     --miniconda create_env='physio' \
                 yaml_file='/home/neuro/physioAnalysis/environment.yml' \
-    --user=root \
-    --run 'curl -o /tmp/code-server.tar.gz -SL https://github.com/cdr/code-server/releases/download/2.1472-vsc1.38.1/code-server2.1472-vsc1.38.1-linux-x86_64.tar.gz' \
-    --run 'mkdir -p /opt/codeserver && tar -xvf /tmp/code-server.tar.gz -C /opt/codeserver --strip-components=1' \
-    --user=neuro \
+    --env "SHELL=/bin/bash" \
+    --run "curl -o /tmp/code-server.tar.gz -SL https://github.com/cdr/code-server/releases/download/3.0.2/code-server-3.0.2-linux-x86_64.tar.gz" \
+    --run "mkdir -p /opt/codeserver && tar -xvf /tmp/code-server.tar.gz -C /opt/codeserver --strip-components=1" \
     --run '/opt/codeserver/code-server --install-extension eamodio.gitlens && /opt/codeserver/code-server --install-extension ms-python.python' \
-    --entrypoint '/opt/codeserver/code-server /home/neuro/physioAnalysis'
-
+    --expose 8080 \
+    --entrypoint '/opt/codeserver/code-server --auth none --host 0.0.0.0 /home/neuro/physioAnalysis'
 }
 
 generate_docker > Dockerfile
