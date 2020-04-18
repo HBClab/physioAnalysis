@@ -9,6 +9,7 @@ dependencies:
   - pip
   - flake8
   - pytest
+  - notebook
   - pip:
     - git+https://github.com/jdkent/NeuroKit.py.git@flex_eda_preproc
 
